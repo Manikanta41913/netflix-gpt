@@ -1,6 +1,6 @@
 # 🎬 Netflix GPT
 
-A modern React application built with Vite and styled with Tailwind CSS. This project serves as a foundation for building Netflix-inspired applications with AI-powered features.
+A modern React application built with Vite and styled with Tailwind CSS. This project serves as a foundation for building Netflix-inspired applications with future AI/GPT integrations.
 
 ## ✨ Features
 
@@ -58,25 +58,27 @@ npm run preview
 - **Frontend Framework**: React 19
 - **Build Tool**: Vite
 - **Styling**: Tailwind CSS v4
-- **Language**: JavaScript (ES6+)
+- **Language**: JavaScript (ES6+) with JSX
 - **Code Quality**: ESLint
 
 ## 📁 Project Structure
 
 ```
 netflix-gpt/
-├── public/          # Static assets
+├── public/                 # Static assets (currently empty)
 ├── src/
-│   ├── assets/      # Images and other assets
-│   ├── App.jsx      # Main App component
-│   ├── main.jsx     # Application entry point
-│   └── index.css    # Global styles and Tailwind imports
-├── index.html       # HTML template
-├── package.json     # Dependencies and scripts
-├── vite.config.js   # Vite configuration
-├── tailwind.config.js    # Tailwind CSS configuration
-├── postcss.config.js     # PostCSS configuration
-└── README.md        # Project documentation
+│   ├── assets/            # Images and other assets
+│   ├── App.jsx            # Main App component
+│   ├── App.css            # App-specific styles (currently unused)
+│   ├── main.jsx           # Application entry point
+│   └── index.css          # Global styles and Tailwind imports
+├── index.html             # HTML template
+├── package.json           # Dependencies and scripts
+├── vite.config.js         # Vite configuration
+├── tailwind.config.js     # Tailwind CSS configuration
+├── postcss.config.js      # PostCSS configuration
+├── TAILWIND_SETUP_GUIDE.md # Tailwind setup reference
+└── README.md              # Project documentation
 ```
 
 ## 🤝 Contributing
@@ -100,9 +102,3 @@ This project is open source and available under the [MIT License](LICENSE).
 ---
 
 ⭐ **Star this repo** if you found it helpful!
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
