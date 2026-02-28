@@ -102,3 +102,22 @@ This project is open source and available under the [MIT License](LICENSE).
 ---
 
 ⭐ **Star this repo** if you found it helpful!
+
+# Nerflix GPT
+
+-- configured Tailwind
+
+#Features
+-Login/Sign UP page
+
+- Redirect to Browse Page
+- Browse
+  - Header
+  - Main Movie
+    - Trailer in Background
+    - Title & Description
+    - Movie Suggestion
+      - MovieLists \* N
+- NetflixGPT
+  - Search Bar
+  - Movie Suggestions

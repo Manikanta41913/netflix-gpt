@@ -1,7 +1,12 @@
+import Body from "./Components/Body"
+import Header from "./Components/Header"
+import Browse from "./Components/Browse"
 function App() {
   return (
-    <div className="text-3xl font-bold text-green-300">Hello, Netflix GPT!</div>
+    <>
+    <Body/>
+    </>
   )
 }
 
-export default App
+export default App;
