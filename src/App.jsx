@@ -1,12 +1,16 @@
-import Body from "./Components/Body"
-import Header from "./Components/Header"
-import Browse from "./Components/Browse"
+import Body from "./Components/Body";
+import Header from "./Components/Header";
+import Browse from "./Components/Browse";
+import { Provider } from "react-redux";
+import appStore from "./utils/appStore";
+
 function App() {
   return (
     <>
-    <Body/>
+      <Provider store={appStore}>
+        <Body />
+      </Provider>
     </>
-  )
+  );
 }
-
 export default App;

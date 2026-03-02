@@ -24,3 +24,6 @@ dist-ssr
 *.sw?
 
 .vercel
+
+# Personal notes (not for GitHub)
+PROJECT_NOTES.md

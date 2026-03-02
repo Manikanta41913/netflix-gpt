@@ -6,9 +6,11 @@ import {
   signInWithEmailAndPassword,
 } from "firebase/auth";
 import { auth } from "../utils/firebase";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
   // State to toggle between Sign In and Sign Up forms
+  const navigate = useNavigate();
   const [isSignInForm, setIsSignInForm] = useState(true);
 
   // State to store and display validation error messages
@@ -58,6 +60,7 @@ const Login = () => {
           // Signed up successfully
           const user = userCredential.user;
           console.log("User signed up:", user);
+          navigate("/Browser");
         })
         .catch((error) => {
           setErrorMessage(error.code + ": " + error.message);
@@ -73,6 +76,7 @@ const Login = () => {
           // Signed in successfully
           const user = userCredential.user;
           console.log("User signed in:", user);
+          navigate("/");
         })
         .catch((error) => {
           setErrorMessage(error.code + ": " + error.message);
