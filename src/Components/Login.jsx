@@ -60,7 +60,7 @@ const Login = () => {
           // Signed up successfully
           const user = userCredential.user;
           console.log("User signed up:", user);
-          navigate("/Browser");
+          navigate("/browse");
         })
         .catch((error) => {
           setErrorMessage(error.code + ": " + error.message);
@@ -76,7 +76,7 @@ const Login = () => {
           // Signed in successfully
           const user = userCredential.user;
           console.log("User signed in:", user);
-          navigate("/");
+          navigate("/browse");
         })
         .catch((error) => {
           setErrorMessage(error.code + ": " + error.message);
