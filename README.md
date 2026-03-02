@@ -121,3 +121,163 @@ This project is open source and available under the [MIT License](LICENSE).
 - NetflixGPT
   - Search Bar
   - Movie Suggestions
+
+---
+
+## 📚 React Concepts Used in This Project
+
+Quick reference guide for React concepts implemented in Netflix GPT.
+
+### 1. **useState Hook**
+
+```jsx
+const [isSignInForm, setIsSignInForm] = useState(true);
+```
+
+- Creates state variables that trigger re-renders when changed
+- Returns: `[currentValue, setterFunction]`
+- **When to use**: For data that affects the UI (form mode, error messages, etc.)
+- **Re-render behavior**: Component re-renders every time state changes
+
+### 2. **useRef Hook**
+
+```jsx
+const email = useRef(null);
+// Access value: email.current.value
+```
+
+- Creates a reference to DOM elements or values that persist across renders
+- **Does NOT cause re-renders** when value changes
+- **When to use**: For input fields (avoid re-render on every keystroke), accessing DOM elements
+- **Difference from useState**: useRef doesn't trigger re-renders
+
+### 3. **Conditional Rendering**
+
+```jsx
+{
+  !isSignInForm && <input placeholder="Full Name" />;
+}
+{
+  isSignInForm ? "Sign In" : "Sign Up";
+}
+```
+
+- Show/hide elements based on conditions
+- `&&` operator: Render if condition is true
+- Ternary `? :`: Choose between two options
+
+### 4. **Event Handling**
+
+```jsx
+const handleSubmit = (e) => {
+  e.preventDefault(); // Prevent page refresh
+  // Handle form logic
+};
+```
+
+- `e.preventDefault()`: Stops default browser behavior (form submission, link navigation)
+- Event object `e` contains info about the event
+
+### 5. **Component Structure**
+
+```jsx
+const Login = () => {
+  // Logic here
+  return <div>JSX here</div>;
+};
+export default Login;
+```
+
+- Functional components (modern React)
+- Return JSX (HTML-like syntax)
+- Export for use in other files
+
+### 6. **Props**
+
+```jsx
+// Parent: <Header />
+// Child receives: props
+import Header from "./Header";
+```
+
+- Pass data from parent to child components
+- One-way data flow (parent → child)
+
+### 7. **React Router**
+
+```jsx
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+
+const router = createBrowserRouter([
+  { path: "/", element: <Login /> },
+  { path: "/browse", element: <Browse /> },
+]);
+```
+
+- Navigate between pages without page refresh
+- Single Page Application (SPA) routing
+
+### 8. **Form Handling**
+
+```jsx
+// Controlled component (useState)
+<input value={email} onChange={(e) => setEmail(e.target.value)} />
+
+// Uncontrolled component (useRef)
+<input ref={emailRef} />
+```
+
+- **Controlled**: React controls the value (uses state)
+- **Uncontrolled**: DOM controls the value (uses ref)
+
+### 9. **Validation Pattern**
+
+```jsx
+const message = checkValidateData(email, password);
+if (message) {
+  setErrorMessage(message); // Show error
+}
+```
+
+- Separate validation logic into utility functions
+- Return error message or null
+
+### 10. **Ternary Operator**
+
+```jsx
+!isSignInForm ? name.current.value : null;
+```
+
+- Shorthand for if-else
+- Format: `condition ? valueIfTrue : valueIfFalse`
+
+---
+
+## 🔑 Key Learnings
+
+### useState vs useRef
+
+| Feature              | useState                               | useRef                |
+| -------------------- | -------------------------------------- | --------------------- |
+| Triggers re-render   | ✅ Yes                                 | ❌ No                 |
+| Use for UI updates   | ✅ Yes                                 | ❌ No                 |
+| Use for input values | ❌ Causes re-render on every keystroke | ✅ Better performance |
+| Access value         | `value`                                | `ref.current.value`   |
+
+### When Component Re-renders
+
+1. State changes (`useState`)
+2. Props change
+3. Parent component re-renders
+4. Context value changes
+
+**useRef does NOT cause re-renders!**
+
+### Common Patterns
+
+- **Toggle state**: `setState(!state)`
+- **Conditional rendering**: `{condition && <Component />}`
+- **Prevent form submit**: `e.preventDefault()`
+- **Access input value**: `ref.current.value`
+
+---
