@@ -22,10 +22,8 @@ const Layout = () => {
     const currentPath = window.location.pathname;
 
     if (user && currentPath === "/") {
-      // User is logged in but on login page → redirect to browse
       navigate("/browse");
     } else if (!user && currentPath === "/browse") {
-      // User is NOT logged in but on browse page → redirect to login
       navigate("/");
     }
   }, [user, navigate]);

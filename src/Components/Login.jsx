@@ -6,6 +6,8 @@ import {
 } from "firebase/auth";
 import { auth } from "../utils/firebase";
 import { updateProfile } from "firebase/auth";
+import { back_ground } from "../utils/constants";
+import { photo_URL } from "../utils/constants";
 
 const Login = () => {
   const [isSignInForm, setIsSignInForm] = useState(true);
@@ -47,8 +49,7 @@ const Login = () => {
 
           updateProfile(user, {
             displayName: name.current.value,
-            photoURL:
-              "https://avatars.githubusercontent.com/u/200455734?v=4&size=64",
+            photoURL: photo_URL,
           })
             .then(() => {
               console.log("✅ Profile updated successfully");
@@ -89,7 +90,7 @@ const Login = () => {
     <div className="relative h-screen">
       <img
         className="absolute w-full h-full object-cover"
-        src="https://assets.nflxext.com/ffe/siteui/vlv3/5eb03855-b753-4788-b9b3-0cc29e3d2891/web/IN-en-20260223-TRIFECTA-perspective_7bcba0fc-d5a5-42f6-b4ed-2ca56a458c61_large.jpg"
+        src={back_ground}
         alt="background"
       />
       <form className="absolute top-[50%] left-[50%] -translate-x-1/2 -translate-y-1/2 p-12 bg-black flex flex-col w-3/12 rounded-md bg-opacity-80">
