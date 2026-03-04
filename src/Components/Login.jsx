@@ -5,11 +5,9 @@ import {
   signInWithEmailAndPassword,
 } from "firebase/auth";
 import { auth } from "../utils/firebase";
-import { useNavigate } from "react-router-dom";
 import { updateProfile } from "firebase/auth";
 
 const Login = () => {
-  const navigate = useNavigate();
   const [isSignInForm, setIsSignInForm] = useState(true);
   const [errorMessage, setErrorMessage] = useState(null);
 
@@ -63,8 +61,6 @@ const Login = () => {
                 displayName: updatedUser.displayName,
                 photoURL: updatedUser.photoURL,
               });
-
-              navigate("/browse");
             })
             .catch((error) => {
               setErrorMessage(error.message);
@@ -82,7 +78,6 @@ const Login = () => {
       )
         .then(() => {
           // Signed in successfully - Body.jsx will handle Redux via onAuthStateChanged
-          navigate("/browse");
         })
         .catch((error) => {
           setErrorMessage(error.code + ": " + error.message);

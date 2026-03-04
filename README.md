@@ -1,283 +1,186 @@
-# 🎬 Netflix GPT
+# Netflix GPT
 
-A modern React application built with Vite and styled with Tailwind CSS. This project serves as a foundation for building Netflix-inspired applications with future AI/GPT integrations.
+A Netflix clone with GPT-powered movie recommendations built with React, Firebase, and Redux Toolkit.
 
-## ✨ Features
+## 🚀 Features
 
-- ⚡ **Fast Development**: Built with Vite for lightning-fast development and hot module replacement
-- 🎨 **Modern UI**: Styled with Tailwind CSS v4 for beautiful, responsive designs
-- ⚛️ **React 19**: Latest React features with modern hooks and components
-- 🔧 **ESLint**: Code quality and consistency with ESLint configuration
-- 📱 **Responsive**: Mobile-first design approach
-
-## 🚀 Getting Started
-
-### Prerequisites
-
-- Node.js (v16 or higher)
-- npm or yarn
-
-### Installation
-
-1. **Clone the repository**
-
-   ```bash
-   git clone https://github.com/Manikanta41913/netflix-gpt.git
-   cd netflix-gpt
-   ```
-
-2. **Install dependencies**
-
-   ```bash
-   npm install
-   ```
-
-3. **Start the development server**
-
-   ```bash
-   npm run dev
-   ```
-
-4. **Open your browser**
-   Navigate to `http://localhost:5173` to see your app running!
-
-### Build for Production
-
-```bash
-npm run build
-```
-
-### Preview Production Build
-
-```bash
-npm run preview
-```
+- ✅ User Authentication (Sign Up/Sign In/Sign Out)
+- ✅ Firebase Authentication Integration
+- ✅ Redux Toolkit for State Management
+- ✅ React Router with Protected Routes
+- ✅ Responsive UI with Tailwind CSS
+- ✅ User Profile with Photo
+- ✅ Session Persistence with onAuthStateChanged
+- ✅ Automatic Route Protection
+- ✅ Optimized Header (Single Instance)
+- ✅ Memory Leak Prevention
 
 ## 🛠️ Tech Stack
 
-- **Frontend Framework**: React 19
-- **Build Tool**: Vite
-- **Styling**: Tailwind CSS v4
-- **Language**: JavaScript (ES6+) with JSX
-- **Code Quality**: ESLint
+- **Frontend:** React 18 + Vite
+- **Styling:** Tailwind CSS
+- **State Management:** Redux Toolkit
+- **Authentication:** Firebase Auth
+- **Routing:** React Router v6
+- **Deployment:** Vercel
+
+## 📦 Installation
+
+```bash
+# Clone the repository
+git clone https://github.com/Manikanta41913/netflix-gpt.git
+
+# Navigate to project directory
+cd netflix-gpt
+
+# Install dependencies
+npm install
+
+# Start development server
+npm run dev
+```
+
+## 🔧 Configuration
+
+Create a Firebase project and add your configuration to `src/utils/firebase.js`:
+
+```javascript
+const firebaseConfig = {
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_AUTH_DOMAIN",
+  projectId: "YOUR_PROJECT_ID",
+  storageBucket: "YOUR_STORAGE_BUCKET",
+  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+  appId: "YOUR_APP_ID",
+  measurementId: "YOUR_MEASUREMENT_ID",
+};
+```
 
 ## 📁 Project Structure
 
 ```
 netflix-gpt/
-├── public/                 # Static assets (currently empty)
 ├── src/
-│   ├── assets/            # Images and other assets
-│   ├── App.jsx            # Main App component
-│   ├── App.css            # App-specific styles (currently unused)
-│   ├── main.jsx           # Application entry point
-│   └── index.css          # Global styles and Tailwind imports
-├── index.html             # HTML template
-├── package.json           # Dependencies and scripts
-├── vite.config.js         # Vite configuration
-├── tailwind.config.js     # Tailwind CSS configuration
-├── postcss.config.js      # PostCSS configuration
-├── TAILWIND_SETUP_GUIDE.md # Tailwind setup reference
-└── README.md              # Project documentation
+│   ├── Components/
+│   │   ├── Header.jsx       # Navigation header with user profile
+│   │   ├── Login.jsx        # Authentication form
+│   │   ├── Browse.jsx       # Main browse page
+│   │   └── Body.jsx         # Router + Layout + Auth listener
+│   ├── utils/
+│   │   ├── firebase.js      # Firebase configuration
+│   │   ├── Validate.js      # Form validation
+│   │   ├── appStore.js      # Redux store
+│   │   └── userSlice.js     # User state slice
+│   ├── App.jsx              # Redux Provider wrapper
+│   ├── main.jsx             # Entry point
+│   └── index.css            # Tailwind imports
+├── public/
+├── package.json
+└── README.md
 ```
+
+## 🎯 Key Features Explained
+
+### Authentication Flow
+
+1. User signs up/signs in via Firebase
+2. `onAuthStateChanged` listener detects auth changes
+3. User data stored in Redux for global access
+4. Automatic redirect based on auth state
+5. Session persists across page refreshes
+
+### Route Protection
+
+- Logged-in users accessing `/` → Redirected to `/browse`
+- Non-logged-in users accessing `/browse` → Redirected to `/`
+- Direct URL access is protected
+- Works on page refresh
+
+### State Management
+
+- Redux Toolkit for global state
+- User slice manages authentication state
+- `onAuthStateChanged` keeps Redux in sync with Firebase
+- Single source of truth for user data
+
+### Performance Optimizations
+
+- Header component mounts once using Outlet pattern
+- Proper useEffect cleanup prevents memory leaks
+- Conditional rendering based on auth state
+- Optimized re-renders
+
+## 🚀 Deployment
+
+The app is deployed on Vercel with automatic deployments from the main branch.
+
+**Live Demo:** [https://netflix-gpt-pi-orpin.vercel.app](https://netflix-gpt-pi-orpin.vercel.app)
+
+### Deploy Your Own
+
+```bash
+# Install Vercel CLI
+npm install -g vercel
+
+# Deploy
+vercel
+```
+
+## 📝 Available Scripts
+
+```bash
+npm run dev      # Start development server
+npm run build    # Build for production
+npm run preview  # Preview production build
+npm run lint     # Run ESLint
+```
+
+## 🎓 Learning Concepts
+
+This project demonstrates:
+
+- React Hooks (useState, useRef, useEffect, useSelector, useDispatch)
+- Redux Toolkit state management
+- Firebase Authentication
+- React Router v6 with nested routes
+- Protected routes implementation
+- Memory leak prevention with cleanup functions
+- Conditional rendering
+- Form validation with regex
+- Tailwind CSS styling
+- Vite build tool
+
+## 🐛 Known Issues
+
+- Firebase Hosting deployment not working (using Vercel instead)
+- Old users created before photoURL implementation won't have profile pictures
+
+## 🔜 Upcoming Features
+
+- [ ] TMDB API integration for movie data
+- [ ] GPT-powered movie recommendations
+- [ ] Movie trailers and details
+- [ ] User watchlist
+- [ ] Search functionality
+- [ ] Multi-language support
 
 ## 🤝 Contributing
 
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## 📄 License
 
-This project is open source and available under the [MIT License](LICENSE).
+This project is open source and available under the MIT License.
 
-## 🙋‍♂️ Author
+## 👨‍💻 Author
 
 **Manikanta**
 
 - GitHub: [@Manikanta41913](https://github.com/Manikanta41913)
 
----
+## 🙏 Acknowledgments
 
-⭐ **Star this repo** if you found it helpful!
-
-# Nerflix GPT
-
--- configured Tailwind
-
-#Features
--Login/Sign UP page
-
-- Redirect to Browse Page
-- Browse
-  - Header
-  - Main Movie
-    - Trailer in Background
-    - Title & Description
-    - Movie Suggestion
-      - MovieLists \* N
-- NetflixGPT
-  - Search Bar
-  - Movie Suggestions
-
----
-
-## 📚 React Concepts Used in This Project
-
-Quick reference guide for React concepts implemented in Netflix GPT.
-
-### 1. **useState Hook**
-
-```jsx
-const [isSignInForm, setIsSignInForm] = useState(true);
-```
-
-- Creates state variables that trigger re-renders when changed
-- Returns: `[currentValue, setterFunction]`
-- **When to use**: For data that affects the UI (form mode, error messages, etc.)
-- **Re-render behavior**: Component re-renders every time state changes
-
-### 2. **useRef Hook**
-
-```jsx
-const email = useRef(null);
-// Access value: email.current.value
-```
-
-- Creates a reference to DOM elements or values that persist across renders
-- **Does NOT cause re-renders** when value changes
-- **When to use**: For input fields (avoid re-render on every keystroke), accessing DOM elements
-- **Difference from useState**: useRef doesn't trigger re-renders
-
-### 3. **Conditional Rendering**
-
-```jsx
-{
-  !isSignInForm && <input placeholder="Full Name" />;
-}
-{
-  isSignInForm ? "Sign In" : "Sign Up";
-}
-```
-
-- Show/hide elements based on conditions
-- `&&` operator: Render if condition is true
-- Ternary `? :`: Choose between two options
-
-### 4. **Event Handling**
-
-```jsx
-const handleSubmit = (e) => {
-  e.preventDefault(); // Prevent page refresh
-  // Handle form logic
-};
-```
-
-- `e.preventDefault()`: Stops default browser behavior (form submission, link navigation)
-- Event object `e` contains info about the event
-
-### 5. **Component Structure**
-
-```jsx
-const Login = () => {
-  // Logic here
-  return <div>JSX here</div>;
-};
-export default Login;
-```
-
-- Functional components (modern React)
-- Return JSX (HTML-like syntax)
-- Export for use in other files
-
-### 6. **Props**
-
-```jsx
-// Parent: <Header />
-// Child receives: props
-import Header from "./Header";
-```
-
-- Pass data from parent to child components
-- One-way data flow (parent → child)
-
-### 7. **React Router**
-
-```jsx
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
-
-const router = createBrowserRouter([
-  { path: "/", element: <Login /> },
-  { path: "/browse", element: <Browse /> },
-]);
-```
-
-- Navigate between pages without page refresh
-- Single Page Application (SPA) routing
-
-### 8. **Form Handling**
-
-```jsx
-// Controlled component (useState)
-<input value={email} onChange={(e) => setEmail(e.target.value)} />
-
-// Uncontrolled component (useRef)
-<input ref={emailRef} />
-```
-
-- **Controlled**: React controls the value (uses state)
-- **Uncontrolled**: DOM controls the value (uses ref)
-
-### 9. **Validation Pattern**
-
-```jsx
-const message = checkValidateData(email, password);
-if (message) {
-  setErrorMessage(message); // Show error
-}
-```
-
-- Separate validation logic into utility functions
-- Return error message or null
-
-### 10. **Ternary Operator**
-
-```jsx
-!isSignInForm ? name.current.value : null;
-```
-
-- Shorthand for if-else
-- Format: `condition ? valueIfTrue : valueIfFalse`
-
----
-
-## 🔑 Key Learnings
-
-### useState vs useRef
-
-| Feature              | useState                               | useRef                |
-| -------------------- | -------------------------------------- | --------------------- |
-| Triggers re-render   | ✅ Yes                                 | ❌ No                 |
-| Use for UI updates   | ✅ Yes                                 | ❌ No                 |
-| Use for input values | ❌ Causes re-render on every keystroke | ✅ Better performance |
-| Access value         | `value`                                | `ref.current.value`   |
-
-### When Component Re-renders
-
-1. State changes (`useState`)
-2. Props change
-3. Parent component re-renders
-4. Context value changes
-
-**useRef does NOT cause re-renders!**
-
-### Common Patterns
-
-- **Toggle state**: `setState(!state)`
-- **Conditional rendering**: `{condition && <Component />}`
-- **Prevent form submit**: `e.preventDefault()`
-- **Access input value**: `ref.current.value`
-
----
+- Netflix for design inspiration
+- Firebase for authentication services
+- Vercel for hosting
+- Redux Toolkit for state management

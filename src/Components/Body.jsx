@@ -1,12 +1,42 @@
 import Browse from "./Browse";
 import Login from "./Login";
 import Header from "./Header";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import {
+  createBrowserRouter,
+  RouterProvider,
+  Outlet,
+  useNavigate,
+} from "react-router-dom";
 import { useEffect } from "react";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "../utils/firebase";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { addUser, removeUser } from "../utils/userSlice";
+
+// Layout component - Header stays mounted
+const Layout = () => {
+  const navigate = useNavigate();
+  const user = useSelector((store) => store.user);
+
+  useEffect(() => {
+    const currentPath = window.location.pathname;
+
+    if (user && currentPath === "/") {
+      // User is logged in but on login page → redirect to browse
+      navigate("/browse");
+    } else if (!user && currentPath === "/browse") {
+      // User is NOT logged in but on browse page → redirect to login
+      navigate("/");
+    }
+  }, [user, navigate]);
+
+  return (
+    <>
+      <Header />
+      <Outlet />
+    </>
+  );
+};
 
 const Body = () => {
   const dispatch = useDispatch();
@@ -14,21 +44,17 @@ const Body = () => {
   const appRouter = createBrowserRouter([
     {
       path: "/",
-      element: (
-        <>
-          <Header />
-          <Login />
-        </>
-      ),
-    },
-    {
-      path: "/browse",
-      element: (
-        <>
-          <Header />
-          <Browse />
-        </>
-      ),
+      element: <Layout />,
+      children: [
+        {
+          index: true,
+          element: <Login />,
+        },
+        {
+          path: "browse",
+          element: <Browse />,
+        },
+      ],
     },
   ]);
 
@@ -49,7 +75,6 @@ const Body = () => {
       }
     });
 
-    // Cleanup function - unsubscribe when component unmounts
     return () => unsubscribe();
   }, [dispatch]);
 
