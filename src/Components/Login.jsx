@@ -1,4 +1,3 @@
-import Header from "./Header";
 import checkValidateData from "../utils/Validate";
 import { useState, useRef } from "react";
 import {
@@ -7,48 +6,37 @@ import {
 } from "firebase/auth";
 import { auth } from "../utils/firebase";
 import { useNavigate } from "react-router-dom";
+import { updateProfile } from "firebase/auth";
 
 const Login = () => {
-  // State to toggle between Sign In and Sign Up forms
   const navigate = useNavigate();
   const [isSignInForm, setIsSignInForm] = useState(true);
-
-  // State to store and display validation error messages
   const [errorMessage, setErrorMessage] = useState(null);
 
-  // Toggle between Sign In and Sign Up mode
   const toggleForm = (e) => {
     e.preventDefault();
     setIsSignInForm(!isSignInForm);
   };
 
-  // useRef to access input values without causing re-renders on every keystroke
   const email = useRef(null);
   const password = useRef(null);
-  const name = useRef(null); // Only used in Sign Up mode
+  const name = useRef(null);
 
-  // Handle form submission for both Sign In and Sign Up
   const handleSignInForm = (e) => {
-    e.preventDefault(); // Prevent page refresh on form submit
+    e.preventDefault();
 
-    // FIX: Pass name only on Sign Up, null on Sign In
-    // !isSignInForm means "NOT Sign In" = "Sign Up"
     const message = checkValidateData(
       email.current.value,
       password.current.value,
-      !isSignInForm ? name.current.value : null, // Pass name only on Sign Up
+      !isSignInForm ? name.current.value : null,
     );
 
     setErrorMessage(message);
-    console.log("Validation result:", message);
-    console.log("Email:", email.current.value);
-    console.log("Password:", password.current.value);
 
     if (message) {
       return;
     }
 
-    // Sign Up or Sign In logic
     if (!isSignInForm) {
       // Sign Up logic
       createUserWithEmailAndPassword(
@@ -57,10 +45,30 @@ const Login = () => {
         password.current.value,
       )
         .then((userCredential) => {
-          // Signed up successfully
           const user = userCredential.user;
-          console.log("User signed up:", user);
-          navigate("/browse");
+
+          updateProfile(user, {
+            displayName: name.current.value,
+            photoURL:
+              "https://avatars.githubusercontent.com/u/200455734?v=4&size=64",
+          })
+            .then(() => {
+              console.log("✅ Profile updated successfully");
+
+              // Get fresh user data from Firebase auth
+              const updatedUser = auth.currentUser;
+              console.log("👤 Fresh user from Firebase:", {
+                uid: updatedUser.uid,
+                email: updatedUser.email,
+                displayName: updatedUser.displayName,
+                photoURL: updatedUser.photoURL,
+              });
+
+              navigate("/browse");
+            })
+            .catch((error) => {
+              setErrorMessage(error.message);
+            });
         })
         .catch((error) => {
           setErrorMessage(error.code + ": " + error.message);
@@ -72,10 +80,8 @@ const Login = () => {
         email.current.value,
         password.current.value,
       )
-        .then((userCredential) => {
-          // Signed in successfully
-          const user = userCredential.user;
-          console.log("User signed in:", user);
+        .then(() => {
+          // Signed in successfully - Body.jsx will handle Redux via onAuthStateChanged
           navigate("/browse");
         })
         .catch((error) => {
@@ -85,19 +91,17 @@ const Login = () => {
   };
 
   return (
-    <div>
-      <Header />
+    <div className="relative h-screen">
       <img
+        className="absolute w-full h-full object-cover"
         src="https://assets.nflxext.com/ffe/siteui/vlv3/5eb03855-b753-4788-b9b3-0cc29e3d2891/web/IN-en-20260223-TRIFECTA-perspective_7bcba0fc-d5a5-42f6-b4ed-2ca56a458c61_large.jpg"
-        alt="logo"
+        alt="background"
       />
-      <form className="fixed top-[50%] left-[50%] -translate-x-1/2 -translate-y-1/2  m-24 p-12 bg-black flex flex-col w-3/12 align-middle rounded-md bg-opacity-80">
-        {/* Dynamic heading based on form mode */}
+      <form className="absolute top-[50%] left-[50%] -translate-x-1/2 -translate-y-1/2 p-12 bg-black flex flex-col w-3/12 rounded-md bg-opacity-80">
         <h1 className="p-2 mt-6 font-bold text-3xl text-center text-white">
           {isSignInForm ? "Sign In" : "Sign UP"}
         </h1>
 
-        {/* Name input - ONLY shown on Sign Up page (!isSignInForm means "not Sign In" = "Sign Up") */}
         {!isSignInForm && (
           <input
             ref={name}
@@ -107,7 +111,6 @@ const Login = () => {
           />
         )}
 
-        {/* Email input - shown on both Sign In and Sign Up */}
         <input
           ref={email}
           type="text"
@@ -115,7 +118,6 @@ const Login = () => {
           className="p-2 m-2 rounded-md"
         />
 
-        {/* Password input - shown on both Sign In and Sign Up */}
         <input
           ref={password}
           type="password"
@@ -123,18 +125,15 @@ const Login = () => {
           className="p-2 m-2 rounded-md"
         />
 
-        {/* Display validation error message */}
         <p className="text-red-700 font-bold ml-2">{errorMessage}</p>
 
-        {/* Submit button - text changes based on form mode */}
         <button
           onClick={handleSignInForm}
-          className="p-2 m-2 bg-red-600 rounded-md cursor-pointer"
+          className="p-2 m-2 bg-red-600 rounded-md cursor-pointer text-white"
         >
           {isSignInForm ? "Sign In" : "Sign Up"}
         </button>
 
-        {/* Toggle button to switch between Sign In and Sign Up */}
         <button
           type="button"
           onClick={toggleForm}
@@ -150,4 +149,5 @@ const Login = () => {
     </div>
   );
 };
+
 export default Login;

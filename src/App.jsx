@@ -1,5 +1,4 @@
 import Body from "./Components/Body";
-import Header from "./Components/Header";
 import Browse from "./Components/Browse";
 import { Provider } from "react-redux";
 import appStore from "./utils/appStore";
