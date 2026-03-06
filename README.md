@@ -14,6 +14,11 @@ A Netflix clone with GPT-powered movie recommendations built with React, Firebas
 - ✅ Automatic Route Protection
 - ✅ Optimized Header (Single Instance)
 - ✅ Memory Leak Prevention
+- ✅ TMDB API Integration
+- ✅ Custom Hooks Pattern
+- ✅ Movie Data Management with Redux
+- ✅ Component-Based Architecture (MainContainer, SecondaryContainer)
+- ✅ Browse Page Structure
 
 ## 🛠️ Tech Stack
 
@@ -64,17 +69,26 @@ netflix-gpt/
 │   ├── Components/
 │   │   ├── Header.jsx       # Navigation header with user profile
 │   │   ├── Login.jsx        # Authentication form
-│   │   ├── Browse.jsx       # Main browse page
-│   │   └── Body.jsx         # Router + Layout + Auth listener
+│   │   ├── Browse.jsx       # Main browse page container
+│   │   ├── Body.jsx         # Router + Layout + Auth listener
+│   │   ├── MainContainer.jsx    # Main movie display (hero section)
+│   │   ├── VideoBackground.jsx  # Video background component
+│   │   ├── VideoTitle.jsx       # Video title overlay
+│   │   └── SecondaryContainer.jsx  # Movie lists section
+│   ├── hooks/
+│   │   └── useNowPlayingMovies.js  # Custom hook for fetching movies
 │   ├── utils/
 │   │   ├── firebase.js      # Firebase configuration
 │   │   ├── Validate.js      # Form validation
-│   │   ├── appStore.js      # Redux store
-│   │   └── userSlice.js     # User state slice
+│   │   ├── constants.js     # App constants (URLs, images, API config)
+│   │   ├── appStore.js      # Redux store configuration
+│   │   ├── userSlice.js     # User state slice
+│   │   └── movieSlice.js    # Movie state slice
 │   ├── App.jsx              # Redux Provider wrapper
 │   ├── main.jsx             # Entry point
 │   └── index.css            # Tailwind imports
 ├── public/
+├── vercel.json              # Vercel SPA routing config
 ├── package.json
 └── README.md
 ```
@@ -84,17 +98,25 @@ netflix-gpt/
 ### Authentication Flow
 
 1. User signs up/signs in via Firebase
-2. `onAuthStateChanged` listener detects auth changes
+2. `onAuthStateChanged` listener in Layout component detects auth changes
 3. User data stored in Redux for global access
-4. Automatic redirect based on auth state
+4. Automatic redirect based on auth state (logged in → /browse, logged out → /)
 5. Session persists across page refreshes
 
 ### Route Protection
 
+- Auth listener runs in Layout component (inside RouterProvider)
 - Logged-in users accessing `/` → Redirected to `/browse`
 - Non-logged-in users accessing `/browse` → Redirected to `/`
 - Direct URL access is protected
 - Works on page refresh
+
+### Layout Pattern
+
+- Layout component wraps all routes using `<Outlet />`
+- Header stays mounted (doesn't re-render on navigation)
+- Only page content changes when navigating
+- Auth listener and navigation logic centralized in Layout
 
 ### State Management
 
@@ -105,10 +127,11 @@ netflix-gpt/
 
 ### Performance Optimizations
 
-- Header component mounts once using Outlet pattern
+- Header component mounts once using Layout + Outlet pattern
 - Proper useEffect cleanup prevents memory leaks
 - Conditional rendering based on auth state
 - Optimized re-renders
+- Image fallback for broken profile photos
 
 ## 🚀 Deployment
 
@@ -139,27 +162,43 @@ npm run lint     # Run ESLint
 
 This project demonstrates:
 
-- React Hooks (useState, useRef, useEffect, useSelector, useDispatch)
-- Redux Toolkit state management
-- Firebase Authentication
-- React Router v6 with nested routes
-- Protected routes implementation
+- React Hooks (useState, useRef, useEffect, useSelector, useDispatch, useNavigate)
+- Custom Hooks pattern for reusable logic
+- Redux Toolkit state management with multiple slices
+- Firebase Authentication with onAuthStateChanged
+- React Router v7 with nested routes and Layout pattern
+- Protected routes with automatic redirects
 - Memory leak prevention with cleanup functions
-- Conditional rendering
+- Conditional rendering and image fallback handling
 - Form validation with regex
+- API integration with TMDB
+- Async/await for data fetching
 - Tailwind CSS styling
 - Vite build tool
+- Vercel deployment with SPA routing configuration
 
-## 🐛 Known Issues
+## 🐛 Known Issues & Solutions
 
-- Firebase Hosting deployment not working (using Vercel instead)
-- Old users created before photoURL implementation won't have profile pictures
+### Vercel Deployment
+
+- ✅ Fixed: Added `vercel.json` with SPA routing configuration
+- All routes now work correctly on Vercel (direct access, refresh, navigation)
+
+### Profile Photos
+
+- ✅ Fixed: Added image fallback in Header component
+- Broken photoURLs automatically show default avatar
+- New signups use photo from constants.js
 
 ## 🔜 Upcoming Features
 
-- [ ] TMDB API integration for movie data
+- [x] TMDB API integration for movie data
+- [x] Browse page with movie display structure
+- [ ] Display movie trailers as background
+- [ ] Movie title and description overlay
+- [ ] Multiple movie lists (Popular, Top Rated, Upcoming)
 - [ ] GPT-powered movie recommendations
-- [ ] Movie trailers and details
+- [ ] Movie details modal
 - [ ] User watchlist
 - [ ] Search functionality
 - [ ] Multi-language support

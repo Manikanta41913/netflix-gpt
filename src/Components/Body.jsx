@@ -10,23 +10,35 @@ import {
 import { useEffect } from "react";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "../utils/firebase";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { addUser, removeUser } from "../utils/userSlice";
 
 // Layout component - Header stays mounted
 const Layout = () => {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
-  const user = useSelector((store) => store.user);
 
   useEffect(() => {
-    const currentPath = window.location.pathname;
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        const { uid, email, displayName, photoURL } = user;
+        console.log("🔥 Firebase User Data:", {
+          uid,
+          email,
+          displayName,
+          photoURL,
+        });
+        dispatch(addUser({ uid, email, displayName, photoURL }));
+        navigate("/browse");
+      } else {
+        console.log("🔥 No user logged in");
+        dispatch(removeUser());
+        navigate("/");
+      }
+    });
 
-    if (user && currentPath === "/") {
-      navigate("/browse");
-    } else if (!user && currentPath === "/browse") {
-      navigate("/");
-    }
-  }, [user, navigate]);
+    return () => unsubscribe();
+  }, [dispatch, navigate]);
 
   return (
     <>
@@ -37,8 +49,6 @@ const Layout = () => {
 };
 
 const Body = () => {
-  const dispatch = useDispatch();
-
   const appRouter = createBrowserRouter([
     {
       path: "/",
@@ -55,26 +65,6 @@ const Body = () => {
       ],
     },
   ]);
-
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) {
-        const { uid, email, displayName, photoURL } = user;
-        console.log("🔥 Firebase User Data:", {
-          uid,
-          email,
-          displayName,
-          photoURL,
-        });
-        dispatch(addUser({ uid, email, displayName, photoURL }));
-      } else {
-        console.log("🔥 No user logged in");
-        dispatch(removeUser());
-      }
-    });
-
-    return () => unsubscribe();
-  }, [dispatch]);
 
   return (
     <div>
