@@ -12,3 +12,16 @@ export const API_OPTIONS = {
       "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJjNTI1MWFjMjFkMGEyZTI4N2ZhMmNmNGQ2YWQ1ZThlNyIsIm5iZiI6MTc3MjY0NzUyNy4yNzQsInN1YiI6IjY5YTg3NDY3MTc2MjI4OWJjYTA4MGEzOSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.yAxltE6HiK3edgrK5ejUqK3GFTal8GfyBOyY8sSedzM",
   },
 };
+export const IMG_CDN = "https://image.tmdb.org/t/p/w500";
+
+// Default export for compatibility (some import styles or older bundles)
+const CONSTANTS = {
+  Netflix_logo,
+  back_ground,
+  photo_URL,
+  API_OPTIONS,
+  IMG_CDN,
+};
+
+export default CONSTANTS;
+
