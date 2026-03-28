@@ -1,23 +1,32 @@
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { addTopRatedMovies } from "../utils/movieSlice";
-import { API_OPTIONS } from "../utils/constants";
 import { useEffect } from "react";
+import { fetchFromTMDB } from "../utils/apiHelper";
 
 const useTopRatedMovies = () => {
   const dispatch = useDispatch();
-  const getTopRatedMovies = async () => {
-    const data = await fetch(
-      "https://api.themoviedb.org/3/movie/top_rated",
-      API_OPTIONS,
-    );
-    const json = await data.json();
-    console.log(json.results);
-    dispatch(addTopRatedMovies(json.results));
-  };
+  const topRatedMovies = useSelector((store) => store.movies.topRatedMovies);
 
   useEffect(() => {
+    // Only fetch if data doesn't exist in Redux (memoization)
+    if (topRatedMovies) return;
+
+    const getTopRatedMovies = async () => {
+      const data = await fetchFromTMDB(
+        "https://api.themoviedb.org/3/movie/top_rated",
+      );
+
+      if (data && data.results) {
+        console.log("Top Rated Movies:", data.results);
+        dispatch(addTopRatedMovies(data.results));
+      } else {
+        console.error("Failed to fetch Top Rated movies");
+        dispatch(addTopRatedMovies([]));
+      }
+    };
+
     getTopRatedMovies();
-  }, []);
+  }, [dispatch, topRatedMovies]);
 };
 
 export default useTopRatedMovies;

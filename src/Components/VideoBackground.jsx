@@ -11,27 +11,25 @@ const VideoBackground = ({ movieId }) => {
   };
   console.log("video key:" + trailerVideo?.key);
   return (
-    <div className="absolute inset-0 w-full h-full overflow-hidden">
-      <iframe
-        className="w-full h-full object-cover -z-20"
-        src={`https://www.youtube.com/embed/${trailerVideo?.key}?autoplay=1&mute=${isMuted ? "1" : "0"}&controls=0&loop=1&playlist=${trailerVideo?.key}&modestbranding=1&rel=0&enablejsapi=1`}
-        title="YouTube video player"
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-        referrerPolicy="strict-origin-when-cross-origin"
-        allowFullScreen
-      ></iframe>
-
-      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent pointer-events-none" />
-
-      <button
-        onClick={toggleMute}
-        className="absolute bottom-60 right-6 z-10 p-3 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 text-white hover:bg-white/20 transition-shadow"
-        title={isMuted ? "Unmute" : "Mute"}
-        aria-pressed={!isMuted}
-        aria-label={isMuted ? "Unmute video" : "Mute video"}
-      >
-        {isMuted ? "🔇" : "🔊"}
-      </button>
+    <div>
+      <div className="absolute top-0 left-0 w-full h-full overflow-hidden z-10">
+        <iframe
+          className="w-full h-full"
+          src={`https://www.youtube.com/embed/${trailerVideo?.key}?autoplay=1`}
+          title="YouTube video player"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          referrerPolicy="strict-origin-when-cross-origin"
+          allowFullScreen
+        ></iframe>
+        console.log("HIi this testing");
+        <button
+          onClick={toggleMute}
+          className="absolute bottom-[10%] right-[2%] bg-gray-900 bg-opacity-70 text-white p-3 rounded-full hover:bg-opacity-90 transition-all z-50 border-2 border-white text-xl"
+          title={isMuted ? "Unmute" : "Mute"}
+        >
+          {isMuted ? "🔇" : "🔊"}
+        </button>
+      </div>
     </div>
   );
 };

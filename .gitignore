@@ -25,5 +25,10 @@ dist-ssr
 
 .vercel
 
+# Environment variables
+.env
+.env.local
+.env.production
+
 # Personal notes (not for GitHub)
 PROJECT_NOTES.md

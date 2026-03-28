@@ -1,7 +1,7 @@
 import { useDispatch } from "react-redux";
 import { useEffect } from "react";
-import { API_OPTIONS } from "../utils/constants";
 import { addTrailerVideo } from "../utils/movieSlice";
+import { fetchFromTMDB } from "../utils/apiHelper";
 
 const useMovieTrailer = (movieId) => {
   const dispatch = useDispatch();
@@ -9,22 +9,28 @@ const useMovieTrailer = (movieId) => {
   useEffect(() => {
     const getMovieVideos = async () => {
       console.log("🎬 Fetching trailer for movieId:", movieId);
-      const data = await fetch(
+
+      const data = await fetchFromTMDB(
         `https://api.themoviedb.org/3/movie/${movieId}/videos`,
-        API_OPTIONS,
       );
 
-      const json = await data.json();
-      console.log("🎬 API Response:", json);
-      const filteredData = json.results.filter(
-        (video) => video.type === "Trailer" && video.site === "YouTube",
-      );
-      const trailer = filteredData.length
-        ? filteredData[0]
-        : json.results.find((v) => v.site === "YouTube");
+      if (data && data.results) {
+        console.log("🎬 API Response:", data);
 
-      console.log("🎬 Selected trailer:", trailer);
-      dispatch(addTrailerVideo(trailer));
+        const filteredData = data.results.filter(
+          (video) => video.type === "Trailer" && video.site === "YouTube",
+        );
+
+        const trailer = filteredData.length
+          ? filteredData[0]
+          : data.results.find((v) => v.site === "YouTube");
+
+        console.log("🎬 Selected trailer:", trailer);
+        dispatch(addTrailerVideo(trailer || null));
+      } else {
+        console.error("Failed to fetch trailer");
+        dispatch(addTrailerVideo(null));
+      }
     };
 
     if (movieId) {

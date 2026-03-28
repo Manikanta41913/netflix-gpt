@@ -1,10 +1,22 @@
 import { signOut } from "firebase/auth";
 import { auth } from "../utils/firebase";
-import { useSelector } from "react-redux";
-import { Netflix_logo, photo_URL } from "../utils/constants";
+import { useSelector, useDispatch } from "react-redux";
+import {
+  Netflix_logo,
+  photo_URL,
+  SUPPORTED_LANGUAGES,
+} from "../utils/constants";
+import { toggleGPTsearchView, changeLanguage } from "../utils/gptSlice";
 
 const Header = () => {
+  const dispatch = useDispatch();
   const user = useSelector((store) => store.user);
+  const showGPTsearch = useSelector((store) => store.gpt.showGPTsearch);
+
+  const handleLanguageChange = (e) => {
+    dispatch(changeLanguage(e.target.value));
+  };
+
   const handleSignOut = () => {
     signOut(auth)
       .then(() => {})
@@ -13,8 +25,11 @@ const Header = () => {
       });
   };
 
+  const handleGPTSearchToggle = () => {
+    dispatch(toggleGPTsearchView());
+  };
+
   const handleImageError = (e) => {
-    // If image fails to load, use the default photo_URL
     e.target.src = photo_URL;
   };
 
@@ -23,6 +38,24 @@ const Header = () => {
       <img className="w-44" src={Netflix_logo} alt="Netflix_logo" />
       {user && (
         <div className="flex gap-2 items-center">
+          {showGPTsearch && (
+            <select
+              onChange={handleLanguageChange}
+              className="p-2 bg-gray-800 text-white rounded-md border border-gray-600 hover:bg-gray-700 transition-colors cursor-pointer"
+            >
+              {SUPPORTED_LANGUAGES.map((lang) => (
+                <option key={lang.identifier} value={lang.identifier}>
+                  {lang.name}
+                </option>
+              ))}
+            </select>
+          )}
+          <button
+            onClick={handleGPTSearchToggle}
+            className="p-2 m-2 bg-purple-800 text-white rounded-md hover:bg-purple-900 transition-colors"
+          >
+            {showGPTsearch ? "Home" : "GPT Search"}
+          </button>
           <img
             className="rounded w-9 h-9"
             src={user.photoURL || photo_URL}

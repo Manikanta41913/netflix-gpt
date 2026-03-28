@@ -1,6 +1,6 @@
 # 🎬 Netflix GPT
 
-A production-ready Netflix clone featuring Firebase authentication, Redux state management, and real-time movie data from TMDB API. Built with React 19, Vite, and Tailwind CSS.
+A production-ready Netflix clone featuring Firebase authentication, Redux state management, Groq-powered movie search, and real-time movie data from TMDB API. Built with React 19, Vite, and Tailwind CSS.
 
 ## 🚀 Live Demo
 
@@ -29,6 +29,16 @@ A production-ready Netflix clone featuring Firebase authentication, Redux state 
 - Gradient overlay for better text readability
 - Responsive video player (aspect-ratio based)
 
+### 🤖 AI-Powered Search (Groq)
+
+- **FREE AI-powered movie search** using Groq (Llama 3.3 70B)
+- Multi-language support (English, Hindi, Spanish, Telugu)
+- Language selector in header (visible on GPT Search page)
+- Dynamic placeholder and button text based on selected language
+- Natural language movie queries
+- Intelligent movie recommendations
+- Displays recommended movies with posters
+
 ### 🛠️ Technical Implementation
 
 - Custom React hooks for data fetching
@@ -39,20 +49,22 @@ A production-ready Netflix clone featuring Firebase authentication, Redux state 
 - SPA routing configuration for deployment
 - Tailwind CSS for responsive design
 - Vite for fast development and optimized builds
+- Multi-language state management with Redux
 
 ---
 
 ## 🛠️ Tech Stack
 
-| Category             | Technology                |
-| -------------------- | ------------------------- |
-| **Frontend**         | React 19 + Vite 7.3       |
-| **Styling**          | Tailwind CSS 3.4          |
-| **State Management** | Redux Toolkit 2.11        |
-| **Authentication**   | Firebase Auth 12.10       |
-| **Routing**          | React Router DOM 7.13     |
-| **API**              | TMDB (The Movie Database) |
-| **Deployment**       | Vercel + Firebase Hosting |
+| Category             | Technology                  |
+| -------------------- | --------------------------- |
+| **Frontend**         | React 19 + Vite 7.3         |
+| **Styling**          | Tailwind CSS 3.4            |
+| **State Management** | Redux Toolkit 2.11          |
+| **Authentication**   | Firebase Auth 12.10         |
+| **Routing**          | React Router DOM 7.13       |
+| **AI Integration**   | Groq (Llama 3.3 70B) - FREE |
+| **API**              | TMDB (The Movie Database)   |
+| **Deployment**       | Vercel + Firebase Hosting   |
 
 ---
 
@@ -64,7 +76,7 @@ A production-ready Netflix clone featuring Firebase authentication, Redux state 
 src/
 ├── Components/
 │   ├── Body.jsx              # Router setup + Auth listener
-│   ├── Header.jsx            # Navigation bar with user profile
+│   ├── Header.jsx            # Navigation bar with language selector
 │   ├── Login.jsx             # Authentication forms
 │   ├── Browse.jsx            # Main browse page
 │   ├── MainContainer.jsx     # Hero section wrapper
@@ -72,7 +84,12 @@ src/
 │   ├── VideoTitle.jsx        # Movie title overlay
 │   ├── SecondaryContainer.jsx # Movie lists container
 │   ├── MovieList.jsx         # Horizontal scrolling list
-│   └── MovieCard.jsx         # Individual movie poster
+│   ├── MovieCard.jsx         # Individual movie poster
+│   ├── ErrorBoundary.jsx     # Error handling component
+│   ├── LoadingSpinner.jsx    # Loading state component
+│   ├── GPTSearch.jsx         # GPT search page container
+│   ├── GPTSearchBar.jsx      # Search input with multi-language support
+│   └── GPTSuggestedMovies.jsx # GPT movie recommendations display
 ├── hooks/
 │   ├── useNowPlayingMovies.jsx
 │   ├── usePopularMovies.jsx
@@ -83,24 +100,14 @@ src/
 │   ├── appStore.js           # Redux store configuration
 │   ├── userSlice.js          # User authentication state
 │   ├── movieSlice.js         # Movie data state
+│   ├── gptSlice.js           # GPT search & language state
+│   ├── apiHelper.js          # TMDB API helper with retry logic
+│   ├── gptopenai.js          # Groq client configuration
 │   ├── firebase.js           # Firebase configuration
-│   ├── constants.js          # API keys and URLs
+│   ├── constants.js          # API keys, URLs, and translations
 │   └── Validate.js           # Form validation logic
-├── App.jsx                   # Redux Provider wrapper
+├── App.jsx                   # Redux Provider + Error Boundary
 └── main.jsx                  # Application entry point
-```
-
-### Data Flow
-
-```
-1. User Authentication
-   Firebase Auth → onAuthStateChanged → Redux (userSlice) → UI Updates
-
-2. Movie Data
-   TMDB API → Custom Hooks → Redux (movieSlice) → Components
-
-3. Routing
-   User Action → React Router → Layout (Auth Check) → Route Component
 ```
 
 ### Redux State Structure
@@ -123,6 +130,14 @@ src/
       type: string,     // "Trailer"
       site: string      // "YouTube"
     }
+  },
+  gpt: {
+    showGPTsearch: boolean,     // Toggle GPT search view
+    selectedLanguage: string,   // Current language (en, hindi, Spanish, Telugu)
+    gptMovies: {
+      movieNames: Array<string>,
+      movieResults: Array<Array<Movie>>
+    }
   }
 }
 ```
@@ -135,6 +150,7 @@ src/
 - **npm** (comes with Node.js)
 - **TMDB API Key** ([Get it here](https://www.themoviedb.org/settings/api))
 - **Firebase Project** ([Create one](https://console.firebase.google.com/))
+- **Groq API Key** ([Get it FREE here](https://console.groq.com))
 
 ---
 
@@ -153,55 +169,47 @@ cd netflix-gpt
 npm install
 ```
 
-### 3. Configure Environment Variables
+### 3. Configure API Keys
 
-Create a `.env.local` file in the root directory:
+**Update `src/utils/constants.js`:**
 
-```env
-# TMDB API
-VITE_TMDB_BEARER_TOKEN=your_tmdb_bearer_token_here
-
-# Firebase Configuration
-VITE_FIREBASE_API_KEY=your_firebase_api_key
-VITE_FIREBASE_AUTH_DOMAIN=your_project.firebaseapp.com
-VITE_FIREBASE_PROJECT_ID=your_project_id
-VITE_FIREBASE_STORAGE_BUCKET=your_project.appspot.com
-VITE_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
-VITE_FIREBASE_APP_ID=your_app_id
-VITE_FIREBASE_MEASUREMENT_ID=your_measurement_id
-```
-
-**⚠️ Important:** Never commit `.env.local` to version control. Add it to `.gitignore`.
-
-### 4. Update Configuration Files
-
-**src/utils/constants.js:**
+Replace with your actual TMDB Bearer token:
 
 ```javascript
 export const API_OPTIONS = {
   method: "GET",
   headers: {
     accept: "application/json",
-    Authorization: `Bearer ${import.meta.env.VITE_TMDB_BEARER_TOKEN}`,
+    Authorization: "Bearer YOUR_ACTUAL_TMDB_BEARER_TOKEN_HERE",
   },
 };
 ```
 
-**src/utils/firebase.js:**
+Replace with your actual Groq API key (FREE):
+
+```javascript
+export const GROQ_API_KEY = "your_actual_groq_api_key_here";
+```
+
+**Update `src/utils/firebase.js`:**
+
+Replace with your Firebase configuration:
 
 ```javascript
 const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
-  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
-  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
-  appId: import.meta.env.VITE_FIREBASE_APP_ID,
-  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID,
+  apiKey: "your_firebase_api_key",
+  authDomain: "your_project.firebaseapp.com",
+  projectId: "your_project_id",
+  storageBucket: "your_project.appspot.com",
+  messagingSenderId: "your_sender_id",
+  appId: "your_app_id",
+  measurementId: "your_measurement_id",
 };
 ```
 
-### 5. Run Development Server
+**⚠️ Security Note:** For production, move all API keys to environment variables and add them to `.gitignore`.
+
+### 4. Run Development Server
 
 ```bash
 npm run dev
@@ -209,7 +217,7 @@ npm run dev
 
 Visit `http://localhost:5173` in your browser.
 
-### 6. Build for Production
+### 5. Build for Production
 
 ```bash
 npm run build
@@ -229,29 +237,50 @@ npm run lint     # Run ESLint
 
 ---
 
+## 🌍 Multi-Language Support
+
+The app supports 4 languages for the GPT search interface:
+
+| Language | Code    | Search Button | Placeholder                         |
+| -------- | ------- | ------------- | ----------------------------------- |
+| English  | en      | Search        | What would you like to watch today? |
+| Hindi    | hindi   | खोज           | आज आप क्या देखना चाहेंगे?           |
+| Spanish  | Spanish | Buscar        | ¿Qué te gustaría ver hoy?           |
+| Telugu   | Telugu  | వెతకండి       | మీరు ఈరోజు ఏమి చూడాలనుకుంటున్నారు?  |
+
+Language selection is available in the header when on the GPT Search page.
+
+---
+
+## 🤖 Why Groq? (FREE AI Alternative)
+
+We use **Groq** instead of OpenAI because:
+
+✅ **Completely FREE** - No credit card required  
+✅ **10x FASTER** than OpenAI  
+✅ **OpenAI-compatible API** - Easy migration  
+✅ **Generous limits** - 30 requests/min, 14,400/day  
+✅ **Powerful model** - Llama 3.3 70B
+
+### Get Your FREE Groq API Key:
+
+1. Go to https://console.groq.com
+2. Sign up (free, no credit card)
+3. Create API key
+4. Add to `src/utils/constants.js`
+
+---
+
 ## 🚀 Deployment
 
 ### Vercel Deployment
 
 1. Push code to GitHub
 2. Import repository on [Vercel](https://vercel.com)
-3. Add environment variables in Vercel dashboard
+3. Add environment variables in Vercel dashboard (if using env vars)
 4. Deploy
 
-The `vercel.json` file is already configured for SPA routing:
-
-```json
-{
-  "buildCommand": "npm run build",
-  "outputDirectory": "dist",
-  "rewrites": [
-    {
-      "source": "/(.*)",
-      "destination": "/index.html"
-    }
-  ]
-}
-```
+The `vercel.json` file is already configured for SPA routing.
 
 ### Firebase Hosting (Alternative)
 
@@ -269,94 +298,19 @@ firebase deploy
 
 ### Custom Hooks Pattern
 
-```javascript
-// Reusable data fetching logic
-const useNowPlayingMovies = () => {
-  const dispatch = useDispatch();
+Reusable data fetching logic with proper cleanup
 
-  useEffect(() => {
-    const fetchMovies = async () => {
-      const data = await fetch(API_URL, API_OPTIONS);
-      const json = await data.json();
-      dispatch(addNowPlayingMovies(json.results));
-    };
-    fetchMovies();
-  }, []);
-};
+### Multi-Language Implementation
 
-// Clean component usage
-const Browse = () => {
-  useNowPlayingMovies(); // Just call the hook!
-  return <div>...</div>;
-};
-```
+Language state in Redux with dynamic translations
 
 ### Layout/Outlet Pattern
 
-```javascript
-// Layout stays mounted, only Outlet content changes
-const Layout = () => {
-  return (
-    <>
-      <Header /> {/* Stays mounted */}
-      <Outlet /> {/* Changes based on route */}
-    </>
-  );
-};
-```
+Persistent header with changing route content
 
 ### Memory Leak Prevention
 
-```javascript
-// Always cleanup listeners
-useEffect(() => {
-  const unsubscribe = onAuthStateChanged(auth, callback);
-  return () => unsubscribe(); // Cleanup on unmount
-}, []);
-```
-
-### Protected Routes
-
-```javascript
-// Automatic redirects based on auth state
-useEffect(() => {
-  if (user && path === "/") navigate("/browse");
-  if (!user && path === "/browse") navigate("/");
-}, [user, navigate]);
-```
-
----
-
-## 🐛 Known Issues & Solutions
-
-### ✅ Vercel Deployment
-
-- Fixed: Added `vercel.json` with SPA routing configuration
-- All routes now work correctly (direct access, refresh, navigation)
-
-### ✅ Profile Photos
-
-- Fixed: Added image fallback in Header component
-- Broken photoURLs automatically show default avatar
-
-### ⚠️ Security Note
-
-- Current code has hardcoded API keys in `constants.js` and `firebase.js`
-- For production, move all secrets to environment variables
-- Rotate any exposed keys immediately
-
----
-
-## 📚 What You'll Learn
-
-- **React 19**: Hooks, custom hooks, component composition
-- **Redux Toolkit**: State management, slices, actions, reducers
-- **Firebase Auth**: Authentication, session persistence, protected routes
-- **React Router v7**: Nested routes, Layout pattern, programmatic navigation
-- **TMDB API**: Fetching movie data, handling async operations
-- **Tailwind CSS**: Utility-first styling, responsive design
-- **Vite**: Fast development, optimized builds
-- **Deployment**: Vercel, Firebase Hosting, SPA routing
+Proper cleanup of listeners and subscriptions
 
 ---
 
@@ -369,37 +323,52 @@ useEffect(() => {
 - [x] Firebase Authentication
 - [x] Redux Toolkit setup
 - [x] React Router configuration
-- [x] Sign Up/Sign In/Sign Out
 - [x] Route protection
-- [x] Session persistence
 
 ### Phase 2: Movie Data Integration ✅
 
 - [x] TMDB API integration
-- [x] Custom hooks (useNowPlayingMovies, useMovieTrailer, etc.)
+- [x] Custom hooks for data fetching
 - [x] Redux movie slice
-- [x] Browse page structure
-- [x] MainContainer component
+- [x] Browse page with movie lists
 - [x] Video background with trailers
-- [x] Video title overlay
-- [x] SecondaryContainer with movie lists
-- [x] MovieCard component
-- [x] Horizontal scrolling
+- [x] API error handling with retry logic
 
-### Phase 3: GPT Integration 🔜
+### Phase 3: AI Integration ✅
 
-- [ ] OpenAI API integration
-- [ ] GPT-powered search
-- [ ] Movie recommendations
-- [ ] Natural language queries
+- [x] Groq API integration (FREE)
+- [x] GPT search page structure
+- [x] Multi-language support (4 languages)
+- [x] Movie recommendations display
+- [x] Redux state for GPT results
 
 ### Phase 4: Enhanced Features 🔜
 
 - [ ] Movie details modal
 - [ ] Cast and crew information
 - [ ] User watchlist
-- [ ] Search functionality
-- [ ] Multi-language support
+- [ ] Advanced search filters
+- [ ] More language options
+
+---
+
+## 🐛 Known Issues & Solutions
+
+### ✅ All React Hook Warnings (Fixed)
+
+- Fixed: Moved async functions inside useEffect
+- Added proper dependency arrays
+
+### ✅ GPT Search Integration (Completed)
+
+- Using Groq (FREE alternative to OpenAI)
+- Multi-language support fully implemented
+- Movie recommendations displaying correctly
+
+### ✅ API Helper (Fixed)
+
+- Automatic retry logic with exponential backoff
+- Graceful error handling for TMDB API
 
 ---
 
@@ -440,6 +409,7 @@ This project is open source and available under the MIT License.
 
 - [Netflix](https://www.netflix.com/) for design inspiration
 - [TMDB](https://www.themoviedb.org/) for movie data API
+- [Groq](https://groq.com/) for FREE AI API
 - [Firebase](https://firebase.google.com/) for authentication services
 - [Vercel](https://vercel.com/) for hosting platform
 - [Redux Toolkit](https://redux-toolkit.js.org/) for state management
@@ -454,6 +424,7 @@ If you have any questions or run into issues:
 - Open an [issue](https://github.com/Manikanta41913/netflix-gpt/issues)
 - Check existing issues for solutions
 - Review the PROJECT_NOTES.md for detailed implementation notes
+- Check TMDB_API_SETUP.md for API configuration help
 
 ---
 
