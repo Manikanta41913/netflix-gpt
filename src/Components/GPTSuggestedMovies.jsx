@@ -1,5 +1,6 @@
 import { useSelector } from "react-redux";
 import MovieList from "./MovieList";
+import { memo } from "react";
 
 const GPTSuggestedMovies = () => {
   const { movieNames, movieResults } = useSelector((store) => store.gpt);
@@ -34,4 +35,4 @@ const GPTSuggestedMovies = () => {
   );
 };
 
-export default GPTSuggestedMovies;
+export default memo(GPTSuggestedMovies);

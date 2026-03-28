@@ -1,4 +1,5 @@
 import MovieCard from "./MovieCard";
+import { memo } from "react";
 
 const MovieList = ({ title, movies = [] }) => {
   return (
@@ -19,4 +20,4 @@ const MovieList = ({ title, movies = [] }) => {
   );
 };
 
-export default MovieList;
+export default memo(MovieList);

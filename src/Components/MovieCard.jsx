@@ -1,13 +1,19 @@
 import { IMG_CDN, photo_URL } from "../utils/constants";
+import { memo } from "react";
 
 const MovieCard = ({ poster_path }) => {
   const src = poster_path ? IMG_CDN + poster_path : photo_URL;
 
   return (
     <div className="w-40 flex-shrink-0 transition-transform hover:scale-105 cursor-pointer">
-      <img alt="movie" className="rounded-md w-full h-auto" src={src} />
+      <img
+        alt="movie"
+        className="rounded-md w-full h-auto"
+        src={src}
+        loading="lazy"
+      />
     </div>
   );
 };
 
-export default MovieCard;
+export default memo(MovieCard);
